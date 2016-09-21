@@ -13,13 +13,14 @@ import java.util.ArrayList;
 
 public class MyCustomAdapter extends BaseAdapter implements ListAdapter {
 
-    private ArrayList<String> list = new ArrayList<String>();
+    public ArrayList<MyObj> list = new ArrayList<MyObj>();
     private Context context;
 
-    public MyCustomAdapter(ArrayList<String> list, Context context) {
+    public MyCustomAdapter(ArrayList<MyObj> list, Context context) {
         this.list = list;
         this.context = context;
     }
+
 
     @Override
     public int getCount() {
@@ -27,15 +28,18 @@ public class MyCustomAdapter extends BaseAdapter implements ListAdapter {
     }
 
     @Override
-    public Object getItem(int pos) {
-        return list.get(pos);
+    public String getItem(int pos) {
+        return list.get(pos).objName;
     }
 
     @Override
     public long getItemId(int pos) {
+        //String id = list.get(pos).getObjId().toString();
         return 0;
-        //return list.get(pos).getId();
-        //just return 0 if your list items do not have an Id variable.
+    }
+
+    public String getObjId(int pos){
+        return list.get(pos).getObjId();
     }
 
     @Override
@@ -46,18 +50,15 @@ public class MyCustomAdapter extends BaseAdapter implements ListAdapter {
             view = inflater.inflate(R.layout.mylistitem, null);
         }
 
-        //Handle TextView and display string from your list
         TextView listItemText = (TextView)view.findViewById(R.id.content);
-        listItemText.setText(list.get(position));
+        listItemText.setText(list.get(position).objName);
 
-        //Handle buttons and add onClickListeners
         Button delBtn = (Button)view.findViewById(R.id.delBtn);
-
         delBtn.setOnClickListener(new View.OnClickListener(){
             @Override
                 public void onClick(View v) {
+                MyDBHelper.onObjDel(context, getObjId(position));
                 list.remove(position);
-
                 notifyDataSetChanged();
             }
         });
